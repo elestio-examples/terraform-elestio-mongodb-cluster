@@ -1,0 +1,81 @@
+formatter: "" # this is required
+
+version: ""
+
+header-from: main.tf
+footer-from: ""
+
+recursive:
+  enabled: false
+  path: modules
+
+sections:
+  hide: []
+  show: []
+
+content: |-
+  {{ .Header }}
+
+  ## How to use it ?
+
+  Copy and paste into your Terraform configuration:
+
+  ```hcl
+  {{ include "examples/main/main.tf" }}
+  ```
+
+  Customize the variables in a `*.tfvars` file:
+  ```hcl
+  {{ include "examples/main/secrets.tfvars" }}
+  ```
+
+  Then run :
+  1. `terraform init`
+  2. `terraform plan -var-file="secrets.tfvars"`
+  3. `terraform apply -var-file="secrets.tfvars"`
+
+  ## Scale the nodes
+
+  If 3 nodes are no longer enough, modify `nodes_count` to 5 in the configuration and run `terraform apply` again.
+  This will add 2 more nodes to the cluster.
+
+  You can also reduce the number of nodes, the excess ones will leave the cluster cleanly at the next `terraform apply`.
+
+  {{ .Footer }}
+  {{ .Inputs }}
+  {{ .Modules }}
+  {{ .Outputs }}
+  {{ .Providers }}
+  {{ .Requirements }}
+  {{ .Resources }}
+
+output:
+  file: ""
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+output-values:
+  enabled: false
+  from: ""
+
+sort:
+  enabled: true
+  by: name
+
+settings:
+  anchor: true
+  color: true
+  default: true
+  description: false
+  escape: true
+  hide-empty: false
+  html: true
+  indent: 2
+  lockfile: true
+  read-comments: true
+  required: true
+  sensitive: true
+  type: true
