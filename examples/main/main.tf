@@ -20,3 +20,9 @@ module "mongodb_cluster" {
     private_key = var.ssh_private_key
   }
 }
+
+# This output will contain the database connection string
+output "cluster_database_admin" {
+  value     = module.mongodb_cluster.cluster_database_admin
+  sensitive = true
+}
