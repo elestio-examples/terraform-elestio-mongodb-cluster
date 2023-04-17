@@ -63,6 +63,9 @@ Then run :
 1. `terraform init`
 2. `terraform plan -var-file="secrets.tfvars"`
 3. `terraform apply -var-file="secrets.tfvars"`
+4. `terraform output cluster_database_admin`
+
+You can destroy the infrastructure with `terraform destroy -var-file="secrets.tfvars"`.
 
 ## Scale the nodes
 
