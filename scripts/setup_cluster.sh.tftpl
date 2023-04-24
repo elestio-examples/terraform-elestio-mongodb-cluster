@@ -13,6 +13,7 @@ if ! grep -cx "${mongodb_secret_key}" auth/key; then
     echo "${mongodb_secret_key}" > auth/key
     docker-compose down
     docker-compose up -d
+    sleep 10s
 fi
 SSH
 %{ endfor ~}

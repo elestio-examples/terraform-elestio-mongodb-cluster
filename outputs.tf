@@ -1,6 +1,7 @@
-output "nodes" {
+output "cluster_nodes" {
   value       = elestio_mongodb.nodes
-  description = "The information of each MongoDB cluster nodes."
+  description = "All the information of the nodes in the cluster."
+  sensitive   = true
 }
 
 output "cluster_database_admin" {
@@ -11,5 +12,6 @@ output "cluster_database_admin" {
     port     = "17271",
     user     = "admin"
   }
-  description = "The information to connect to the database."
+  description = "The database connection secrets."
+  sensitive   = true
 }
