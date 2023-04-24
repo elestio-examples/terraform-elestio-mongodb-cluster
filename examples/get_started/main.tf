@@ -18,8 +18,8 @@ resource "elestio_project" "project" {
 }
 
 module "cluster" {
-  # source = "elestio-examples/mongodb-cluster/elestio"
-  source = "../.." # use the local version
+  source = "elestio-examples/mongodb-cluster/elestio"
+  # source = "../.." # use the local version
 
   project_id         = elestio_project.project.id
   mongodb_secret_key = var.mongodb_secret_key
