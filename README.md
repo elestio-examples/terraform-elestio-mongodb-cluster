@@ -14,7 +14,7 @@ Using this module, you can easily and quickly deploy a **MongoDB Cluster** on **
 
 ## Usage
 
-There is a ready-to-deploy example included in the [examples](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples) folder but simple usage is as follows:
+There is a [ready-to-deploy example](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples/get_started) included in the [examples](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples) folder but simple usage is as follows:
 
 ```hcl
 module "mongodb_example_cluster" {
@@ -52,7 +52,7 @@ output "cluster_database_admin" {
 
 ## Examples
 
-- [Get Started](https://github.com/elestio-examples/terraform-elestio-mysql-cluster/tree/main/examples/get_started) - Ready-to-deploy example which creates MySQL Cluster on Elestio with Terraform in 5 minutes.
+- [Get Started](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples/get_started) - Ready-to-deploy example which creates MySQL Cluster on Elestio with Terraform in 5 minutes.
 
 ## Scale the cluster
 

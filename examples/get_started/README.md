@@ -43,6 +43,15 @@ Some knowledge of [terraform](https://developer.hashicorp.com/terraform/intro) i
 
 </br>
 
+## Scaling
+
+If 2 nodes are no longer enough after the first `terraform apply`, modify `nodes_count` to 4 in the configuration and run `terraform apply` again.
+This will add 2 more nodes to the cluster.
+
+You can also reduce the number of nodes, the excess ones will leave the cluster cleanly at the next `terraform apply`.
+
+</br>
+
 ## How to use the cluster
 
 According to the [MongoDB documentation](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/#connect-to-a-replica-set), you can put several hosts in a connection string.</br>

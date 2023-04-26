@@ -19,12 +19,12 @@ resource "elestio_project" "project" {
 
 module "cluster" {
   source = "elestio-examples/mongodb-cluster/elestio"
-  # source = "../.." # use the local version
+  # source = "../.." # If you want to use local version
 
-  project_id         = elestio_project.project.id
-  mongodb_secret_key = var.mongodb_secret_key
-  nodes_count        = 2
+  project_id = elestio_project.project.id
 
+  nodes_count = 3
+  # The same configuration will be applied to each node
   config = {
     server_name   = "mongo"
     provider_name = "hetzner"
@@ -35,11 +35,13 @@ module "cluster" {
     admin_email   = var.elestio_email
   }
 
+  mongodb_secret_key = var.mongodb_secret_key
+
   ssh_key = {
     key_name    = "admin"                   # or var.ssh_key.name
     public_key  = file("~/.ssh/id_rsa.pub") # or var.ssh_key.public_key
     private_key = file("~/.ssh/id_rsa")     # or var.ssh_key.private_key
-    # See variables.tf and secrets.tfvars file comments if your want to use variables.
+    # See variables.tf and secrets.tfvars file comments if your want to use variables instead file() function.
   }
 }
 
