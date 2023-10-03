@@ -12,9 +12,9 @@ provider "elestio" {
 }
 
 resource "elestio_project" "project" {
-  name             = "MongoDB Cluster"
-  description      = "Ready-to-deploy terraform example"
-  technical_emails = var.elestio_email
+  name            = "MongoDB Cluster"
+  description     = "Ready-to-deploy terraform example"
+  technical_email = var.elestio_email
 }
 
 module "cluster" {
@@ -38,9 +38,9 @@ module "cluster" {
   mongodb_secret_key = var.mongodb_secret_key
 
   ssh_key = {
-    key_name    = "admin"                   # or var.ssh_key.name
-    public_key  = file("~/.ssh/id_rsa.pub") # or var.ssh_key.public_key
-    private_key = file("~/.ssh/id_rsa")     # or var.ssh_key.private_key
+    key_name    = "admin"                          # or var.ssh_key.name
+    public_key  = chomp(file("~/.ssh/id_rsa.pub")) # or var.ssh_key.public_key
+    private_key = file("~/.ssh/id_rsa")            # or var.ssh_key.private_key
     # See variables.tf and secrets.tfvars file comments if your want to use variables instead file() function.
   }
 }

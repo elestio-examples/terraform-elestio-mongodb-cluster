@@ -8,10 +8,10 @@ resource "elestio_mongodb" "nodes" {
   version       = var.config.version
   support_level = var.config.support_level
   admin_email   = var.config.admin_email
-  ssh_keys = [
+  ssh_public_keys = [
     {
-      key_name   = var.ssh_key.key_name
-      public_key = var.ssh_key.public_key
+      username = var.ssh_key.key_name
+      key_data = var.ssh_key.public_key
     },
   ]
 

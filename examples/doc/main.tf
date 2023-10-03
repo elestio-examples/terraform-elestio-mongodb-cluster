@@ -19,7 +19,7 @@ module "mongodb_example_cluster" {
 
   ssh_key = {
     key_name    = "admin"
-    public_key  = file("~/.ssh/id_rsa.pub")
+    public_key  = chomp(file("~/.ssh/id_rsa.pub"))
     private_key = file("~/.ssh/id_rsa")
   }
 }
