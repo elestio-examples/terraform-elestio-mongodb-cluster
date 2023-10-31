@@ -1,6 +1,5 @@
 module "cluster" {
-  # source = "elestio-examples/mongodb-cluster/elestio"
-  source = "../.."
+  source = "elestio-examples/mongodb-cluster/elestio"
 
   project_id      = "xxxxxx"
   mongodb_pass    = "xxxxxx"
