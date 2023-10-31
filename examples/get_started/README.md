@@ -26,7 +26,13 @@ Some knowledge of [terraform](https://developer.hashicorp.com/terraform/intro) i
    This file contains the sensitive values to be passed as variables to Terraform.</br>
    You should **never commit this file** with git.
 
-2. Run terraform with the following commands:
+2. Generate your MongoDB keyfile using the following command:
+
+```bash
+openssl rand -base64 756 > keyfile
+```
+
+3. Run terraform with the following commands:
 
    ```bash
    terraform init
@@ -35,18 +41,18 @@ Some knowledge of [terraform](https://developer.hashicorp.com/terraform/intro) i
    terraform show
    ```
 
-3. You can use the `terraform output` command to print the output block of your main.tf file:
+4. You can use the `terraform output` command to print the output block of your main.tf file:
 
    ```bash
-   terraform output cluster_database_admin
+   terraform output connection_string
    ```
 
 </br>
 
 ## Scaling
 
-If 2 nodes are no longer enough after the first `terraform apply`, modify `nodes_count` to 4 in the configuration and run `terraform apply` again.
-This will add 2 more nodes to the cluster.
+If 3 nodes are no longer enough after the first `terraform apply`, modify `nodes_count` to 4 in the configuration and run `terraform apply` again.
+This will add 1 more nodes to the cluster.
 
 You can also reduce the number of nodes, the excess ones will leave the cluster cleanly at the next `terraform apply`.
 
@@ -57,37 +63,4 @@ You can also reduce the number of nodes, the excess ones will leave the cluster 
 According to the [MongoDB documentation](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/#connect-to-a-replica-set), you can put several hosts in a connection string.</br>
 Example: `mongodb://user:password@host1:17271,host2:17271,host3:17271/?replicaSet=Cluster0`
 
-Use `terraform output cluster_database_admin` command to output your cluster connection string:
-
-```bash
-# cluster_database_admin
-{
-  "command" = "mongodb://admin:*****@91.107.194.15:17271,128.140.93.48:17271/?replicaSet=Cluster0"
-  "hosts" = [
-    "91.107.194.15",
-    "128.140.93.48",
-  ]
-  "password" = "*****"
-  "port" = "17271"
-  "user" = "admin"
-}
-```
-
-</br>
-
-## Testing
-
-1. [Download MongoDB Compass](https://www.mongodb.com/try/download/compass)
-
-2. Use the `terraform output cluster_database_admin` command to form independent connection strings with a single host
-
-   - Node 0: `mongodb://admin:*****@91.107.194.15:17271`
-   - Node 1: `mongodb://admin:*****@128.140.93.48:17271`
-
-3. Connect **independently** to each of its connection strings on MongoDB Compass
-
-4. Create a database, collection and document on the first node. You should see it automatically appear on the second node a few seconds later.
-
-You can try turning off the first node on the [Elestio dashboard](https://dash.elest.io/).
-The second node remains functional.
-When you restart it, it automatically updates with the new data.
+Use `terraform output donnection_string` command to output your cluster connection string.

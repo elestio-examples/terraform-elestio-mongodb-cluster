@@ -1,9 +1,9 @@
-formatter: "" # this is required
+formatter: '' # this is required
 
-version: ""
+version: ''
 
 header-from: main.tf
-footer-from: ""
+footer-from: ''
 
 recursive:
   enabled: false
@@ -16,57 +16,94 @@ sections:
 content: |-
   # Elestio MongoDB Cluster Terraform module
 
-  Using this module, you can easily and quickly deploy a **MongoDB Cluster** on **Elestio** that is configured correctly and **ready to use**, without spending a lot of time on manual configuration.
+  Using this module, you can easily and quickly deploy with **Terraform** a **MongoDB Cluster** on **Elestio** that is configured correctly and **ready to use**, without spending a lot of time on manual configuration.
 
   {{ .Header }}
+  ## Module requirements
 
-  ## What it does ?
-
-  1. Uses [official](https://hub.docker.com/_/mongo) MongoDB docker image.
-  2. Creates `N` nodes.
-  3. Makes sure nodes can talk to each other and create the cluster.
-  4. Makes sure that new nodes always join the cluster.
+  - The minimum number of nodes in a mongodb cluster is 3
+  - 1 Elestio account https://dash.elest.io/signup
+  - 1 API key https://dash.elest.io/account/security
+  - 1 SSH public/private key (see how to create one [here](https://registry.terraform.io/providers/elestio/elestio/latest/docs/guides/ssh_keys))
 
   ## Usage
 
-  There is a [ready-to-deploy example](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples/get_started) included in the [examples](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples) folder but simple usage is as follows:
+  This is a minimal example of how to use the module:
 
   ```hcl
-  {{ include "examples/doc/main.tf" }}
+  {{ include "examples/doc/usage.tf" }}
   ```
 
-  ## Examples
+  Keep your mongodb password safe, you will need it to access the admin panel.
 
-  - [Get Started](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples/get_started) - Ready-to-deploy example which creates MySQL Cluster on Elestio with Terraform in 5 minutes.
+  If you want to know more about node configuration, check the mongodb service documentation [here](https://registry.terraform.io/providers/elestio/elestio/latest/docs/resources/mongodb).
 
-  ## Scale the cluster
+  If you want to choose your own provider, datacenter or server type, check the guide [here](https://registry.terraform.io/providers/elestio/elestio/latest/docs/guides/providers_datacenters_server_types).
 
-  If 2 nodes are no longer enough after the first `terraform apply`, modify `nodes_count` to 4 in the configuration and run `terraform apply` again.
-  This will add 2 more nodes to the cluster.
+  If you want to generated a valid SSH Key, check the guide [here](https://registry.terraform.io/providers/elestio/elestio/latest/docs/guides/ssh_keys).
 
-  You can also reduce the number of nodes, the excess ones will leave the cluster cleanly at the next `terraform apply`.
+  If you add more nodes, you may attains the resources limit of your account, please visit your account [quota page](https://dash.elest.io/account/add-quota).
+
+  ## Quick configuration
+
+  The following example will create a MongoDB cluster with 3 nodes.
+
+  You may need to adjust the configuration to fit your needs.
+
+  Create a `main.tf` file at the root of your project, and fill it with your Elestio credentials:
+
+  ```hcl
+  {{ include "examples/doc/init.tf" }}
+  ```
+
+  Generate your MongoDB keyfile using the following command:
+
+  ```bash
+  openssl rand -base64 756 > keyfile
+  ```
+
+  Now you can use the module to create mongodb nodes:
+
+  ```hcl
+  {{ include "examples/doc/module.tf" }}
+  ```
+
+  Finally, let's add some outputs to retrieve useful information:
+
+  ```hcl
+  {{ include "examples/doc/outputs.tf" }}
+  ```
+
+  You can now run `terraform init` and `terraform apply` to create your MongoDB cluster.
+  After a few minutes, the cluster will be ready to use.
+  You can access your outputs with `terraform output`:
+
+  ```bash
+  $ terraform output nodes_admins
+  $ terraform output connection_string
+  ```
+
+  If you want to update some parameters, you can edit the `main.tf` file and run `terraform apply` again.
+  Terraform will automatically update the cluster to match the new configuration.
+  Please note that changing the node count requires to change the .env of existing nodes. This is done automatically by the module.
+
+  ## Ready-to-deploy example
+
+  We created a MongoDB ready-to-deploy cluster example which creates the same infrastructure as the previous example.
+  You can find it [here](https://github.com/elestio-examples/terraform-elestio-mongodb-cluster/tree/main/examples/get_started).
+  Follow the instructions to deploy the example.
 
   ## How to use the cluster
 
-  According to the [MongoDB documentation](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/#connect-to-a-replica-set), you can put several hosts in a connection string.</br>
+  According to the [MongoDB documentation](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/#connect-to-a-replica-set), you can put several hosts in a connection string.
+
   Example: `mongodb://user:password@host1:17271,host2:17271,host3:17271/?replicaSet=Cluster0`
 
-  Use `terraform output cluster_database_admin` command to output your cluster connection string:
+  Use `terraform output connection_string` command to output database secrets:
 
   ```bash
-  # cluster_database_admin
-  {
-    "command" = "mongodb://admin:*****@91.107.194.15:17271,128.140.93.48:17271/?replicaSet=Cluster0"
-    "hosts" = [
-      "91.107.194.15",
-      "128.140.93.48",
-    ]
-    "password" = "*****"
-    "port" = "17271"
-    "user" = "admin"
-  }
+  {{ include "examples/doc/readme_output.sh" }}
   ```
-
   {{ .Footer }}
   {{ .Inputs }}
   {{ .Modules }}
@@ -76,7 +113,7 @@ content: |-
   {{ .Resources }}
 
 output:
-  file: ""
+  file: ''
   mode: inject
   template: |-
     <!-- BEGIN_TF_DOCS -->
@@ -85,7 +122,7 @@ output:
 
 output-values:
   enabled: false
-  from: ""
+  from: ''
 
 sort:
   enabled: true

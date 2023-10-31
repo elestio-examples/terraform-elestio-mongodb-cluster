@@ -7,10 +7,10 @@ chmod -R 600 $${filename}
 
 # Update the keyfile for authentication on all nodes if needed
 %{ for node in nodes ~}
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $${filename} root@${node.ipv4} <<-SSH
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $${filename} root@${node.cname} <<-SSH
 cd /opt/app
-if ! grep -cx "${mongodb_secret_key}" auth/key; then
-    echo "${mongodb_secret_key}" > auth/key
+if ! grep -cx "${mongodb_keyfile}" auth/key; then
+    echo "${mongodb_keyfile}" > auth/key
     docker-compose down
     docker-compose up -d
     sleep 10s
@@ -19,7 +19,7 @@ SSH
 %{ endfor ~}
 
 # Force the reconfig of the cluster on the first node
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $${filename} root@${nodes[0].ipv4} <<-SSH
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $${filename} root@${nodes[0].cname} <<-SSH
 cd /opt/app
 docker exec -i mongo mongosh --host mongo:27017 -u admin -p "${software_password}" <<-MONGOSH
   use admin
@@ -28,12 +28,12 @@ docker exec -i mongo mongosh --host mongo:27017 -u admin -p "${software_password
 %{ for index, node in nodes ~}
       {
         "_id": ${index},
-        "host": "${node.ipv4}:17271",
-        "priority": ${index == 0 ? 10 : 1}
+        "host": "${node.cname}:17271",
       },
 %{ endfor ~}
     ]
   rs.reconfig(cfg, { force: true })
+  rs.status()
 MONGOSH
 SSH
 

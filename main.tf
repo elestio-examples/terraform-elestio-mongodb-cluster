@@ -1,47 +1,57 @@
 resource "elestio_mongodb" "nodes" {
-  count         = var.nodes_count
-  project_id    = var.project_id
-  server_name   = "${var.config.server_name}-${count.index}"
-  server_type   = var.config.server_type
-  provider_name = var.config.provider_name
-  datacenter    = var.config.datacenter
-  version       = var.config.version
-  support_level = var.config.support_level
-  admin_email   = var.config.admin_email
-  ssh_public_keys = [
-    {
-      username = var.ssh_key.key_name
-      key_data = var.ssh_key.public_key
-    },
-  ]
+  for_each = { for value in var.nodes : value.server_name => value }
+
+  project_id       = var.project_id
+  version          = var.mongodb_version
+  default_password = var.mongodb_pass
+  server_name      = each.value.server_name
+  provider_name    = each.value.provider_name
+  datacenter       = each.value.datacenter
+  server_type      = each.value.server_type
+  // Merge the module configuration_ssh_key with the optional ssh_public_keys attribute
+  ssh_public_keys = concat(each.value.ssh_public_keys, [{
+    username = var.configuration_ssh_key.username
+    key_data = var.configuration_ssh_key.public_key
+  }])
+
+  // Optional attributes
+  admin_email                                       = each.value.admin_email
+  alerts_enabled                                    = each.value.alerts_enabled
+  app_auto_updates_enabled                          = each.value.app_auto_update_enabled
+  backups_enabled                                   = each.value.backups_enabled
+  firewall_enabled                                  = each.value.firewall_enabled
+  keep_backups_on_delete_enabled                    = each.value.keep_backups_on_delete_enabled
+  remote_backups_enabled                            = each.value.remote_backups_enabled
+  support_level                                     = each.value.support_level
+  system_auto_updates_security_patches_only_enabled = each.value.system_auto_updates_security_patches_only_enabled
 
   connection {
     type        = "ssh"
-    user        = "root"
-    host        = self.cname
-    private_key = file("/Users/adamkrim/.ssh/id_rsa")
+    host        = self.ipv4
+    private_key = var.configuration_ssh_key.private_key
   }
 
   provisioner "remote-exec" {
     inline = [
-      # Delete default config and data only for subnodes
-      count.index > 0 ? "rm -rf /opt/app/data/*" : "echo"
+      "cd /opt/app",
+      "docker-compose down",
+      each.value.server_name != var.nodes[0].server_name ? "rm -rf /opt/app/data/*" : "echo"
     ]
   }
 }
 
-resource "null_resource" "cluster_configuration" {
-  # Changes to any instance of the cluster requires re-provisioning
+resource "null_resource" "update_nodes_env" {
   triggers = {
-    require_replace = join(",", concat([var.mongodb_secret_key], elestio_mongodb.nodes.*.id))
+    requires_replace = join(",", [for node in elestio_mongodb.nodes : node.id], [var.mongodb_keyfile])
   }
 
   provisioner "local-exec" {
     command = templatefile("${path.module}/scripts/setup_cluster.sh.tftpl", {
-      software_password  = elestio_mongodb.nodes[0].admin.password,
-      nodes              = [for node in elestio_mongodb.nodes : tomap({ "id" = node.id, "ipv4" = node.ipv4 })]
-      ssh_private_key    = var.ssh_key.private_key
-      mongodb_secret_key = var.mongodb_secret_key
+      ssh_private_key   = nonsensitive(var.configuration_ssh_key.private_key)
+      software_password = nonsensitive(var.mongodb_pass),
+      mongodb_keyfile   = nonsensitive(var.mongodb_keyfile)
+      nodes             = [for node in elestio_mongodb.nodes : tomap({ "id" = node.id, "cname" = node.cname })]
     })
+    quiet = true
   }
 }
