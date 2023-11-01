@@ -140,6 +140,13 @@ module "cluster" {
 }
 ```
 
+To get a valid random mongodb password, you can use the url https://api.elest.io/api/auth/passwordgenerator
+
+```bash
+$ curl -s https://api.elest.io/api/auth/passwordgenerator
+{"status":"OK","password":"7Tz1lCfD-Y8di-AyU2o467"}
+```
+
 Finally, let's add some outputs to retrieve useful information:
 
 ```hcl
@@ -192,7 +199,7 @@ $ terraform output connection_string
 |------|-------------|------|---------|:--------:|
 | <a name="input_configuration_ssh_key"></a> [configuration\_ssh\_key](#input\_configuration\_ssh\_key) | After the nodes are created, Terraform must connect to apply some custom configuration.<br>This configuration is done using SSH from your local machine.<br>The Public Key will be added to the nodes and the Private Key will be used by your local machine to connect to the nodes.<br><br>Read the guide [\"How generate a valid SSH Key for Elestio\"](https://registry.terraform.io/providers/elestio/elestio/latest/docs/guides/ssh_keys). Example:<pre>configuration_ssh_key = {<br>  username = "admin"<br>  public_key = chomp(file("\~/.ssh/id_rsa.pub"))<br>  private_key = file("\~/.ssh/id_rsa")<br>}</pre> | <pre>object({<br>    username    = string<br>    public_key  = string<br>    private_key = string<br>  })</pre> | n/a | yes |
 | <a name="input_mongodb_keyfile"></a> [mongodb\_keyfile](#input\_mongodb\_keyfile) | The nodes will use this key to authenticate each other.<br>Read [How to generate a keyfile](https://www.mongodb.com/docs/v2.4/tutorial/generate-key-file).<br>For example, the following operation `openssl rand -base64 741 > ./keyfile`:<pre>mongodb_keyfile = file("./keyfile")</pre> | `string` | n/a | yes |
-| <a name="input_mongodb_pass"></a> [mongodb\_pass](#input\_mongodb\_pass) | The password can only contain alphanumeric characters or hyphens `-`.<br>Require at least 10 characters, one uppercase letter, one lowercase letter and one number.<br>Example: `rewrw42snU-bt0y-4KwqpolZDq` DO NOT USE **THIS** EXAMPLE PASSWORD. | `string` | n/a | yes |
+| <a name="input_mongodb_pass"></a> [mongodb\_pass](#input\_mongodb\_pass) | Require at least 10 characters, one uppercase letter, one lowercase letter and one number.<br>Generate a random valid password: https://api.elest.io/api/auth/passwordgenerator | `string` | n/a | yes |
 | <a name="input_mongodb_version"></a> [mongodb\_version](#input\_mongodb\_version) | The cluster nodes must share the same mongodb version.<br>Leave empty or set to `null` to use the Elestio recommended version. | `string` | `null` | no |
 | <a name="input_nodes"></a> [nodes](#input\_nodes) | Each element of this list will create an Elestio MongoDB Resource in your cluster.<br>Read the following documentation to understand what each attribute does, plus the default values: [Elestio KeyDB Resource](https://registry.terraform.io/providers/elestio/elestio/latest/docs/resources/mongodb). | <pre>list(<br>    object({<br>      server_name                                       = string<br>      provider_name                                     = string<br>      datacenter                                        = string<br>      server_type                                       = string<br>      admin_email                                       = optional(string)<br>      alerts_enabled                                    = optional(bool)<br>      app_auto_update_enabled                           = optional(bool)<br>      backups_enabled                                   = optional(bool)<br>      firewall_enabled                                  = optional(bool)<br>      keep_backups_on_delete_enabled                    = optional(bool)<br>      remote_backups_enabled                            = optional(bool)<br>      support_level                                     = optional(string)<br>      system_auto_updates_security_patches_only_enabled = optional(bool)<br>      ssh_public_keys = optional(list(<br>        object({<br>          username = string<br>          key_data = string<br>        })<br>      ), [])<br>    })<br>  )</pre> | `[]` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | n/a | `string` | n/a | yes |
@@ -209,19 +216,19 @@ No modules.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_elestio"></a> [elestio](#provider\_elestio) | = 0.12.1 |
+| <a name="provider_elestio"></a> [elestio](#provider\_elestio) | = 0.13.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | = 3.2.0 |
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_elestio"></a> [elestio](#requirement\_elestio) | = 0.12.1 |
+| <a name="requirement_elestio"></a> [elestio](#requirement\_elestio) | = 0.13.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | = 3.2.0 |
 ## Resources
 
 | Name | Type |
 |------|------|
-| [elestio_mongodb.nodes](https://registry.terraform.io/providers/elestio/elestio/0.12.1/docs/resources/mongodb) | resource |
+| [elestio_mongodb.nodes](https://registry.terraform.io/providers/elestio/elestio/0.13.0/docs/resources/mongodb) | resource |
 | [null_resource.update_nodes_env](https://registry.terraform.io/providers/hashicorp/null/3.2.0/docs/resources/resource) | resource |
 <!-- END_TF_DOCS -->

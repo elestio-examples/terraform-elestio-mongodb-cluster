@@ -68,6 +68,13 @@ content: |-
   {{ include "examples/doc/module.tf" }}
   ```
 
+  To get a valid random mongodb password, you can use the url https://api.elest.io/api/auth/passwordgenerator
+
+  ```bash
+  $ curl -s https://api.elest.io/api/auth/passwordgenerator
+  {"status":"OK","password":"7Tz1lCfD-Y8di-AyU2o467"}
+  ```
+
   Finally, let's add some outputs to retrieve useful information:
 
   ```hcl
