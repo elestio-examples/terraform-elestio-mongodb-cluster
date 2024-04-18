@@ -12,5 +12,5 @@ provider "elestio" {
 }
 
 resource "elestio_project" "project" {
-  name = "MongoDB Cluster"
+  name = "mongodb-cluster"
 }
