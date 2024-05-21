@@ -21,7 +21,7 @@ SSH
 # Force the reconfig of the cluster on the first node
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i $${filename} root@${nodes[0].cname} <<-SSH
 cd /opt/app
-docker exec -i mongo mongosh --host mongo:27017 -u admin -p "${software_password}" <<-MONGOSH
+docker-compose exec -T mongo mongosh --host mongo:27017 -u admin -p "${software_password}" <<-MONGOSH
   use admin
   cfg = rs.config()
   cfg.members = [

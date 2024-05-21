@@ -120,21 +120,21 @@ module "cluster" {
   nodes = [
     {
       server_name   = "mongodb-1"
-      provider_name = "scaleway"
-      datacenter    = "fr-par-1"
-      server_type   = "SMALL-2C-2G"
+      provider_name = "hetzner"
+      datacenter    = "fsn1"
+      server_type   = "SMALL-1C-2G"
     },
     {
       server_name   = "mongodb-2"
-      provider_name = "scaleway"
-      datacenter    = "fr-par-2"
-      server_type   = "SMALL-2C-2G"
+      provider_name = "hetzner"
+      datacenter    = "fsn1"
+      server_type   = "SMALL-1C-2G"
     },
     {
       server_name   = "mongodb-3"
-      provider_name = "scaleway"
-      datacenter    = "fr-par-2"
-      server_type   = "SMALL-2C-2G"
+      provider_name = "hetzner"
+      datacenter    = "fsn1"
+      server_type   = "SMALL-1C-2G"
     },
   ]
 }
